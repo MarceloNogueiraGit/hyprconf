@@ -1,6 +1,31 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "[*] Criando usuário builduser..."
+useradd -m builduser
+echo "builduser ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/builduser
+chmod 440 /etc/sudoers.d/builduser
+
+echo "[*] Atualizando pacman..."
+pacman -Syy --noconfirm
+
+echo "[*] Clonando yay..."
+sudo -u builduser git clone https://aur.archlinux.org/yay.git /home/builduser/yay
+
+echo "[*] Compilando yay..."
+cd /home/builduser/yay
+sudo -u builduser makepkg -si --noconfirm
+
+echo "[*] Removendo builduser e arquivos..."
+cd /
+rm -rf /home/builduser/yay
+userdel -r builduser || true
+
+echo "[*] yay instalado com sucesso!"
+
+#!/usr/bin/env bash
+set -euo pipefail
+
 echo "[*] Iniciando personalização da airootfs..."
 
 # Garantir que pacman está atualizado dentro do ambiente da ISO
