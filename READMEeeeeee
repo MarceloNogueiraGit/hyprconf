@@ -1,3 +1,23 @@
+#!/usr/bin/env bash
+set -e
+
+USER_NAME=$(ls /home)
+
+echo "[*] Baixando seus dotfiles do GitHub..."
+git clone https://github.com/MarceloNogueiraGit/hyprconf-install /home/$USER_NAME/hyprconf-install
+chown -R $USER_NAME:$USER_NAME /home/$USER_NAME/hyprconf-install
+
+echo "[*] Aplicando permissões ao instalador..."
+chmod +x /home/$USER_NAME/hyprconf-install/install.sh
+
+echo "[*] Executando o instalador..."
+sudo -u $USER_NAME bash /home/$USER_NAME/hyprconf-install/install.sh
+
+echo "[*] Removendo serviço de first-boot..."
+rm -f /etc/systemd/system/firstboot-dotfiles.service
+systemctl daemon-reload
+
+echo "[*] Configuração de dotfiles concluída!"
 <a id="top"></a>
 
 <h1 align="center">Minimal Hyprland Configuration</h1>
