@@ -1,4 +1,23 @@
 #!/usr/bin/env bash
+set -euo pipefail
+
+echo "[*] Iniciando personalização da airootfs..."
+
+# Garantir que pacman está atualizado dentro do ambiente da ISO
+echo "[*] Atualizando pacman dentro da ISO..."
+pacman -Syy --noconfirm
+
+echo "[*] Instalando yay (AUR helper) na ISO..."
+git clone https://aur.archlinux.org/yay.git /tmp/yay
+cd /tmp/yay
+sudo -u builduser makepkg -si --noconfirm || makepkg -si --noconfirm
+cd /
+rm -rf /tmp/yay
+
+echo "[*] Limpeza concluída."
+echo "[*] customize_airootfs.sh finalizado com sucesso!"
+
+#!/usr/bin/env bash
 set -e
 
 USER_NAME=$(ls /home)
